@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw Lines with Undo</title>
+    <style>
+        .drawing-area {
+            position: relative;
+            width: 2000px;
+            height: 1000px;
+            border: 1px solid #000;
+        }
+
+        .line {
+            position: absolute;
+            background-color: black;
+            height: 2px;
+            transform-origin: 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="drawingArea" class="drawing-area"></div>
+
+    <script>
+        var isDrawing = false;
+        var startPoint = { x: 0, y: 0 };
+        var lines = []; // Almacena las líneas dibujadas
+
+        function startDrawing(e) {
+            isDrawing = true;
+            startPoint = { x: e.clientX, y: e.clientY };
+        }
+
+        function drawLine(e) {
+            if (!isDrawing) return;
+
+            var drawingArea = document.getElementById("drawingArea");
+
+            // Crea un nuevo elemento div para la línea
+            var line = document.createElement("div");
+            line.className = "line";
+
+            // Calcula la longitud y el ángulo de la línea
+            var length = Math.sqrt(Math.pow(e.clientX - startPoint.x, 2) + Math.pow(e.clientY - startPoint.y, 2));
+            var angle = Math.atan2(e.clientY - startPoint.y, e.clientX - startPoint.x);
+
+            // Establece las propiedades de estilo para la línea
+            line.style.left = startPoint.x + "px";
+            line.style.top = startPoint.y + "px";
+            line.style.width = length + "px";
+            line.style.transform = "rotate(" + angle + "rad)";
+            line.style.backgroundColor = "black";
+
+            // Agrega la línea al área de dibujo y almacénala en el arreglo
+            drawingArea.appendChild(line);
+            lines.push(line);
+
+            // Actualiza el punto de inicio para la próxima línea
+            startPoint = { x: e.clientX, y: e.clientY };
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function undoDrawing() {
+            if (lines.length > 0) {
+                var lastLine = lines.pop();
+                lastLine.remove();
+            }
+        }
+
+        var drawingArea = document.getElementById("drawingArea");
+
+        // Agrega eventos de mouse para controlar el dibujo
+        drawingArea.addEventListener("mousedown", startDrawing);
+        drawingArea.addEventListener("mousemove", drawLine);
+        drawingArea.addEventListener("mouseup", stopDrawing);
+
+        // Agrega evento de teclado para deshacer (Ctrl + Z)
+        document.addEventListener("keydown", function (e) {
+            if (e.ctrlKey && e.key === "z") {
+                undoDrawing();
+            }
+        });
+    </script>
+</body>
+</html>

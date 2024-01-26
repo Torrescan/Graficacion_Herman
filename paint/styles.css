@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#toolbar {
+    background-color: #eee;
+    padding: 10px;
+    text-align: center;
+}
+
+button {
+    margin: 5px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+#lienzo {
+    width: 80vw;
+    height: 80vh;
+    background-color: #fff;
+    margin: 20px auto;
+    position: relative;
+    cursor: crosshair;
+}
+
+.pixel {
+    width: 5px;
+    height: 5px;
+    background-color: #000;
+    position: absolute;
+}
